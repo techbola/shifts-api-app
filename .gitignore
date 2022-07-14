@@ -1,0 +1,7 @@
+/vendor
+.htaccess
+.env
+.DS_Store
+.vscode/
+/.idea/
+.idea/*

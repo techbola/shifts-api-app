@@ -1,0 +1,17 @@
+{
+  "name": "mac/phpblog",
+  "autoload": {
+    "psr-4": {
+      "App\\": "App/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Adebola",
+      "email": "bfagbowore@gmail.com"
+    }
+  ],
+  "require": {
+    "vlucas/phpdotenv": "^2.4"
+  }
+}
