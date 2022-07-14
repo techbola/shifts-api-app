@@ -20,10 +20,9 @@ class AppRepository {
         try {
             $statement = $this->db->prepare($statement);
             $statement->execute();
-            while ($row = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
-                var_dump($row);
-                foreach($row as $table) {
-                    $this->db->prepare("DELETE from ". $table['Tables_in_shift_app'])->execute();
+            while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                foreach($row as $key => $table) {
+                    $this->db->prepare("DELETE from ". $table)->execute();
                 }
             }
             return $statement->rowCount();
