@@ -5,12 +5,14 @@ namespace App\Lib;
 class Request
 {
     public $params;
+    public $query_params;
     public $reqMethod;
     public $contentType;
 
-    public function __construct($params = [])
+    public function __construct($params = [], $query_params = [])
     {
         $this->params = $params;
+        $this->query_params = $query_params;
         $this->reqMethod = trim($_SERVER['REQUEST_METHOD']);
         $this->contentType = !empty($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
     }

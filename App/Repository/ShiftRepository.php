@@ -14,8 +14,11 @@ class ShiftRepository {
     }
 
     // query execution to get all shift data
-    public function findAll()
+    public function findAll($limit, $page)
     {
+        //offset
+        $paginationStart = ($page - 1) * $limit;
+
         $statement = "SELECT
             s.id,
             s.type,
@@ -37,11 +40,13 @@ class ShiftRepository {
             LEFT JOIN 
                 locations l ON s.location_id = l.id
             LEFT JOIN 
-                events e ON s.event_id = e.id
-            ORDER BY s.created_at DESC";
+                events e ON s.event_id = e.id 
+            ORDER BY s.created_at DESC 
+            LIMIT $limit OFFSET $paginationStart";
 
         try {
             $statement = $this->db->query($statement);
+            $totalRecords = $statement->rowCount();
             $result = [];
             while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
 
@@ -62,6 +67,20 @@ class ShiftRepository {
                 }
 
                 array_push($result, $row);
+            }
+
+            if ($page > 1) {
+                // add url to get previous set of data 
+                $result['previous'] = 'http://127.0.0.1:8000/api/shifts?page='.($page - 1);
+            }
+
+            if ($totalRecords > 0) {
+                $totalPage = ceil(count($this->getTotalShifts()) / $limit);
+
+                if ($totalPage > $page) {
+                    // add url to get next set of data
+                    $result['next'] = 'http://127.0.0.1:8000/api/shifts?page='.($page + 1);
+                }
             }
 
             return $result;
@@ -106,7 +125,7 @@ class ShiftRepository {
             $row['end'] = $this->formatDateTime($row['end']);
         
             //get shift departments
-            $departments = $this->getShiftDepartments($row['id']);
+            $departments = $this->getShiftDepartments($id);
             if (count($departments) > 0) {
                 foreach ($departments as $department) {
                     array_push($row['departments'], $department['name']);
@@ -196,15 +215,14 @@ class ShiftRepository {
     }
 
     // query execution to get shifts for a location between start and end dates
-    public function getShiftsByLocation($location, $startDate, $endDate)
+    public function getShiftsByLocation($location, $startDate, $endDate, $limit, $page)
     {
-        $allShifts = $this->findAll();
+        $allShifts = $this->findAll($limit, $page);
 
         $filteredShifts = [];
 
         foreach($allShifts as $shift) {
-
-            if ($shift['location'] === $location && date($shift['start']) >= date($startDate) && date($shift['end']) <= date($endDate)) {
+            if ($shift['location'] == $location && date($shift['start']) >= date($startDate) && date($shift['end']) <= date($endDate)) {
                 array_push($filteredShifts, $shift);
             }
         }
@@ -215,5 +233,18 @@ class ShiftRepository {
     // format datetime to ISO 8601 date
     public function formatDateTime($datetime) {
         return date_format(date_create($datetime), 'c');;
+    }
+
+    public function getTotalShifts() {
+
+        $statement = "SELECT * FROM $this->table";
+
+        try {
+            $statement = $this->db->prepare($statement);
+            $statement->execute();
+            return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            exit($e->getMessage());
+        }
     }
 }

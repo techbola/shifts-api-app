@@ -14,13 +14,15 @@ class ShiftController
     public function __construct()
     {
         $this->shiftRepository = new ShiftRepository();
+        $this->request = new Request();
+        $this->response = new Response();
     }
 
     // Get all shifts data
-    public function index()
+    public function index($limit, $page)
     { 
-        $shifts = $this->shiftRepository->findAll();
-        return (new Response)->toJSON($shifts);
+        $shifts = $this->shiftRepository->findAll($limit, $page);
+        return $this->response->toJSON($shifts);
     }
 
     // Get single shift data
@@ -28,35 +30,35 @@ class ShiftController
     { 
         $shift = $this->shiftRepository->find($id);
         if ($shift) {
-            return (new Response)->toJSON($shift);
+            return $this->response->toJSON($shift);
         } else {
-            return (new Response)->status(404)->toJSON(['error' => "Not Found"]);
+            return $this->response->status(404)->toJSON(['error' => "Not Found"]);
         }
     }
 
     // store a shift record in db
     public function store()
     {
-        $requestData = (new Request)->getJSON();
+        $requestData = $this->request->getJSON();
 
         if (count($requestData) > 0) {
             $allShifts = [];
             foreach ($requestData as $data) {
                 // validate request data
                 if (!isset($data->type) || empty($data->type)) {
-                    return (new Response)->status(400)->toJSON(['error' => "Type field is required"]);
+                    return $this->response->status(400)->toJSON(['error' => "Type field is required"]);
                 }
                 if (!isset($data->start) || empty($data->start)) {
-                    return (new Response)->status(400)->toJSON(['error' => "Start field is required"]);
+                    return $this->response->status(400)->toJSON(['error' => "Start field is required"]);
                 }
                 if (!isset($data->end) || empty($data->end)) {
-                    return (new Response)->status(400)->toJSON(['error' => "End field is required"]);
+                    return $this->response->status(400)->toJSON(['error' => "End field is required"]);
                 }
                 if (!isset($data->location_id) || empty($data->location_id) || !is_int($data->location_id)) {
-                    return (new Response)->status(400)->toJSON(['error' => "Location field is required and has type integer"]);
+                    return $this->response->status(400)->toJSON(['error' => "Location field is required and has type integer"]);
                 }
                 if (!isset($data->user_id) || empty($data->user_id) || !is_int($data->user_id)) {
-                    return (new Response)->status(400)->toJSON(['error' => "User field is required and has type integer"]);
+                    return $this->response->status(400)->toJSON(['error' => "User field is required and has type integer"]);
                 }
 
                 $shift = $this->shiftRepository->insert((array) $data);
@@ -64,37 +66,36 @@ class ShiftController
             }
 
             if (count($allShifts) > 0) {
-                return (new Response)->status(201)->toJSON($allShifts);
+                return $this->response->status(201)->toJSON([
+                    'message' => 'Shift created successfully',
+                    'data' => $allShifts
+                ]);
             } else {
-                return (new Response)->status(200)->toJSON("No data available");
+                return $this->response->status(200)->toJSON("No data available");
             }
 
         } else {
-            return (new Response)->status(400)->toJSON(['error' => "No request data provided"]);
+            return $this->response->status(400)->toJSON(['error' => "No request data provided"]);
         }
         
     }
 
     // get shifts for a location between start and end dates
-    public function location_shifts($request)
+    public function location_shifts($location, $start, $end, $limit, $page)
     { 
-        // get location, start, and end query params
-        $location = $request->params[0];
-        $start = $request->params[1];
-        $end = $request->params[2];
 
-        if (!isset($location)) {
-            return (new Response)->status(400)->toJSON(['error' => "Location field is required"]);
+        if (!$location) {
+            return $this->response->status(400)->toJSON(['error' => "Location field is required"]);
         }
-        if (!isset($start)) {
-            return (new Response)->status(400)->toJSON(['error' => "Start field is required"]);
+        if (!$start) {
+            return $this->response->status(400)->toJSON(['error' => "Start field is required"]);
         }
-        if (!isset($end)) {
-            return (new Response)->status(400)->toJSON(['error' => "End field is required"]);
+        if (!$end) {
+            return $this->response->status(400)->toJSON(['error' => "End field is required"]);
         }
 
-        $shifts = $this->shiftRepository->getShiftsByLocation($location, $start, $end);
-        return (new Response)->status(200)->toJSON($shifts);
+        $shifts = $this->shiftRepository->getShiftsByLocation($location, $start, $end, $limit, $page);
+        return $this->response->status(200)->toJSON($shifts);
     }
 
 }

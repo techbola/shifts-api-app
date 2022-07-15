@@ -14,15 +14,17 @@ class AppController
     public function __construct()
     {
         $this->appRepository = new AppRepository();
+        $this->request = new Request();
+        $this->response = new Response();
     }
 
     // delete all data stored in db
     public function deleteData()
     { 
         if ($this->appRepository->deleteData()) {
-            return (new Response)->status(200)->toJSON(['message' => "App Data Deleted"]);
+            return $this->response->status(200)->toJSON(['message' => "App Data Deleted"]);
         } else {
-            return (new Response)->status(400)->toJSON(['error' => "Something went wrong"]);
+            return $this->response->status(400)->toJSON(['error' => "Something went wrong"]);
         }
     }
 }

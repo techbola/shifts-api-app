@@ -15,9 +15,11 @@ use App\Controller\ShiftController;
 use App\Controller\AppController;
 
 // route to get all shifts 
-Router::get('/api/shifts', function () {
+Router::get('/api/shifts', function (Request $request) {
+    $limit = (count($request->query_params) > 0 && isset($request->query_params['limit'])) ? $request->query_params['limit'] : 10;
+    $page = count($request->query_params) > 0 && isset($request->query_params['page']) ? $request->query_params['page'] : 1;
     $shiftController = new ShiftController();
-    $shiftController->index();
+    $shiftController->index($limit, $page);
 });
 
 // route to create shift
@@ -26,10 +28,10 @@ Router::post('/api/shifts', function () {
     $shiftController->store();
 });
 
-// route to get single shift
-// regex inside () is used to udentify params  
-Router::get('/api/shifts/([0-9]*)', function (Request $request) {
+// // route to get single shift
+Router::get('/api/single-shift/([0-9]*)', function (Request $request) {
     $shiftController = new ShiftController();
+    // $shiftController->single_shift($request->params ? $request->params['shift_id'] : null);
     $shiftController->single_shift($request->params[0]);
 });
 
@@ -39,9 +41,13 @@ Router::delete('/api/delete/app-data', function () {
     $appController->deleteData();
 });
 
-// route to get shifts for a location between start and end dates
-// regex inside () is used to udentify params  
-Router::get('/api/shifts/filter/location/([\w]+)/start/([\w\-+:]+)/end/([\w\-+:]+)', function (Request $request) {
+// // route to get shifts for a location between start and end dates
+Router::get('/api/filter/shifts', function (Request $request) {
     $shiftController = new ShiftController();
-    $shiftController->location_shifts($request);
+    $limit = (count($request->query_params) > 0 && isset($request->query_params['limit'])) ? $request->query_params['limit'] : 10;
+    $page = count($request->query_params) > 0 && isset($request->query_params['page']) ? $request->query_params['page'] : 1;
+    $location = count($request->query_params) > 0 && isset($request->query_params['location']) ? $request->query_params['location'] : null;
+    $start = count($request->query_params) > 0 && isset($request->query_params['start']) ? $request->query_params['start'] : null;
+    $end = count($request->query_params) > 0 && isset($request->query_params['end']) ? $request->query_params['end'] : null;
+    $shiftController->location_shifts($location, $start, $end, $limit, $page);
 });
