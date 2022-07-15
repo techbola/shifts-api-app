@@ -19,3 +19,7 @@ Run `php -S 127.0.0.1:8000` to serve the project
 
 Here is a link to the postman documentation:
 https://documenter.getpostman.com/view/616819/UzQvrPqb
+
+I also implemeted pagination to the get requests.
+This prevents the app from crashing or causing a hang on the frontend/app coonsuming the api. So the pagination helps limit the amount data gotten per request.
+This is my solution for the number (4) question in the test.
