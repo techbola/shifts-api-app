@@ -21,20 +21,20 @@ Here is a link to the postman documentation:
 https://documenter.getpostman.com/view/616819/UzQvrPqb
 
 ## Create many shifts with relations
-URL: http://127.0.0.1:8000/api/shifts
-Request Method: POST
-Data: Array of shift data input
-Optional data: limit, and page. 
+- URL: http://127.0.0.1:8000/api/shifts
+- Request Method: POST
+- Data: Array of shift data input
+- Optional data: limit, and page. 
 
 ## Delete all data stored in app
-URL: http://127.0.0.1:8000/api/delete/app-data
-Request Method: GET
+- URL: http://127.0.0.1:8000/api/delete/app-data
+- Request Method: GET
 
 ## Filter Shifts by location name and between 2 dates
-URL: http://127.0.0.1:8000/api/filter/shifts
-Request Method: GET
-Data: location, start, and end. 
-Optional data: limit, and page. 
+- URL: http://127.0.0.1:8000/api/filter/shifts
+- Request Method: GET
+- Data: location, start, and end. 
+- Optional data: limit, and page. 
 
 ## Answer to number (4)
 I implemeted pagination to the GET requests `Getting all shifts and Getting Shifts for a location between 2 dates`
