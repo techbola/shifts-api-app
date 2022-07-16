@@ -3,7 +3,7 @@
 Please fork this repo to your own github account, then `git clone` it
 locally.
 
-You'll need to create a .env file, this will contain database credentials like this.
+You'll need to create a `.env` file, this will contain database credentials like this.
 
 ![Screenshot](docs/images/env.png)
 
