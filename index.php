@@ -1,8 +1,9 @@
 <?php
 
+// import autoloading feature, helps make importing classes easier
 require __DIR__ . '/vendor/autoload.php';
-use Dotenv\Dotenv;
 
+use Dotenv\Dotenv;
 $dotenv = new DotEnv(__DIR__);
 $dotenv->load();
 

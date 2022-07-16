@@ -12,6 +12,7 @@ class Response
         return $this;
     }
     
+    // output api response as JSON with HTTP status code
     public function toJSON($data = [])
     {
         http_response_code($this->status);

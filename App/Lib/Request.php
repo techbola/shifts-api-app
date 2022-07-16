@@ -31,6 +31,7 @@ class Request
         return $body;
     }
 
+    // get the data that was sent in the request
     public function getJSON()
     {
         if ($this->reqMethod !== 'POST') {

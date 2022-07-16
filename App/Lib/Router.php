@@ -31,6 +31,7 @@ class Router
         self::on($route, $callback);
     }
 
+    // match the path using regex, if match, it will execute a callback function and pass request parameters
     public static function on($regex, $cb)
     {
         
