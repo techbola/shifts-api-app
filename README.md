@@ -26,7 +26,7 @@ https://documenter.getpostman.com/view/616819/UzQvrPqb
 - Request Method: POST
 - Data: Array of shift data input
 - Optional data: limit, and page.
-  Sample data:
+- Sample data:
   ![Screenshot](docs/images/store_shifts.png)
 
 ### Delete all data stored in app
@@ -40,7 +40,7 @@ https://documenter.getpostman.com/view/616819/UzQvrPqb
 - Request Method: GET
 - Data: location, start, and end.
 - Optional data: limit, and page.
-  Sample data:
+- Sample data:
   ![Screenshot](docs/images/filter_shifts.png)
 
 ### Answer to number (4)
